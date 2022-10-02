@@ -1,8 +1,8 @@
 .text
 .align 4
-.global exception_entry
+.global _exception_entry
 
-exception_entry:
+_exception_entry:
 
 leave_current_task:
     // store x0 to SP, so that x0 can be used temporarily
@@ -58,11 +58,11 @@ start_handle_exception:
 
 .align 4
 .text
-.global enter_current_task
+.global _enter_current_task
 /** @arg current_task **/
 /** Context switch back to current_task **/
 
-enter_current_task:
+_enter_current_task:
     ldr x0, =current_task
     ldr x0, [x0]
 
@@ -122,9 +122,9 @@ enter_current_task:
     eret
 
 
-.global handle_error
+.global _handle_error
 .align 4
-handle_error:
+_handle_error:
     mrs x0, CurrentEL
     mrs x1, ELR_EL1
     mrs x2, ESR_EL1

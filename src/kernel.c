@@ -1,29 +1,28 @@
 #include "kernel.h"
 #include "common.h"
-#include "rpi.h"
-#include "memory.h"
-#include "printf.h"
 #include "task_scheduler.h"
+#include "task.h"
+#include "user_tasks.h"
+#include "printf.h"
 #include "exception.h"
 
-void boot() {
-    init_gpio();
-    init_spi(0);
-    init_uart(0);
-//    printf("Init I/O\r\n");
 
-    memory_init();
-//    printf("Init memory\r\n");
-    handle_error();
-    task_queue_init();
-//    printf("Init task queue\r\n");
-    handle_error();
+void init_first_user_task() {
+    create_task(INITIAL_PRIORITY, initial_user_task, -1);
 }
 
 void kmain() {
-    bool looping = true;
-
-    while (looping) {
-
+    printf("Start Program\r\n");
+    init_first_user_task();
+    while(1) {
+        Task *task = schedule();
+        if (task != NULL) {
+            int request = activate(task);
+            handle_exception(request);
+        } else {
+            printf("All user tasks have finished, exit elegantly\r\n");
+            return 0;
+        }
     }
+    printf("Kernel Program Exit\r\n");
 }

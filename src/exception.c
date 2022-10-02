@@ -9,19 +9,26 @@
 
 u64 (*exception_handlers[1 << 16 ])(void);
 
+u64 activate(Task* task) {
+    current_task = task;
+    activate_current_task();
+}
+
 void handle_exception(u64 esr) {
-//    printf("Calling Handle Exception\r\n");
-//    printf("Exception code is %u\r\n", esr);
     u8 exception_class = (esr >> EXCEPTION_CLASS_OFFSET);
     if (exception_class == SVC_CLASS) {
         u16 imm = esr; // cast to the last 16 bits
         u64 result = exception_handlers[imm]();
-//        printf("Kernel returned result for SVC(%d) is %u\r\n", imm, result);
         get_current_task()->x[0] = result;
     } else {
         printf("Unsupported exception class: %u\r\n", esr);
     }
 
-//    printf("Exit handle_exception\r\n");
     return;
+}
+
+void print_error(u64 current_el, u64 elr1, u64 esr1) {
+    current_el = (current_el >> 2) & 3;
+    printf("CurrentEL is %d\r\n", current_el);
+    printf("EL1 - ELR is %x; ESR is %d\r\n", elr1, esr1);
 }

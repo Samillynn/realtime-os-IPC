@@ -5,7 +5,6 @@
 #include "exception.h"
 #include "printf.h"
 #include "boot.h"
-#include "../test/utilities.h"
 
 #define TASK_POOL_SIZE  64
 
@@ -44,7 +43,6 @@ void task_queue_init() {
 }
 
 void task_queue_add(Task *task) {
-//    printf("Calling task_queue_add\r\n");
     i32 priority = task->priority;
 
     if (task_queue[priority].end) {
@@ -56,7 +54,6 @@ void task_queue_add(Task *task) {
     }
 
     task->next = NULL;
-//    printf("Finish task_queue_add\r\n");
 }
 
 Task *task_queue_pop() {
@@ -95,10 +92,8 @@ char stack[10000];
 Task *create_task(i32 priority, void (*func)(), i32 parent_tid) {
     priority = i32_clamp(priority, TASK_PRIORITY_MIN, TASK_PRIORITY_MAX - 1);
     Task *task = NULL;
-//    printf("Calling create_task\r\n");
 
-    if (task_pool_ptr) { // TODO: check priority range
-//        printf("task_pool_ptr = %p\r\n", task_pool_ptr);
+    if (task_pool_ptr) {
         task = task_pool_ptr;
         task_pool_ptr = task->next;
         task_init(task);
@@ -108,9 +103,7 @@ Task *create_task(i32 priority, void (*func)(), i32 parent_tid) {
         task->parent_tid = parent_tid;
         task->priority = priority;
 
-        // TODO: ask Daniel, swap the next 2 statements
         task->memory_block = memory_allocate_block();
-//        task->sp = task->memory_block->address;
         task->sp = (u64)memory_get_block_end(task->memory_block);
 
         task->pc = (u64)func;
@@ -121,11 +114,9 @@ Task *create_task(i32 priority, void (*func)(), i32 parent_tid) {
         task->next = NULL;
 
         task_queue_add(task);
-//        printf("Task created successfully: tid=%d, pid=%d, pty=%d\r\n\n", task->tid, task->parent_tid, task->priority);
     } else {
         printf("Task creating failed\r\n");
     }
-//    printf("------------------------------\r\n");
 
     return task;
 }
@@ -142,21 +133,9 @@ Task *get_current_task() {
 }
 
 Task *schedule() {
-//    printf("Calling schedule\r\n");
     if (current_task) {
         task_queue_add(current_task);
     }
 
-    current_task = task_queue_pop();
-    if (get_current_task() != NULL) {
-//        printf("The newly scheduled task is\r\n");
-        print_current_task();
-//        printf("Enter current task, aka. context switch\r\n");
-//        printf("------------------------------\r\n");
-        enter_current_task();
-    } else {
-        printf("All user tasks have finished, exit elegantly\r\n");
-        exit_all();
-    }
-    return current_task;
+    return task_queue_pop();
 }

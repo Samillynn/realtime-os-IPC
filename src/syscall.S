@@ -1,39 +1,14 @@
-//
-// Created by 28379 on 9/25/2022.
-//
-
+.macro make_svc func_name svc_code
 .text
 .align 4
-.global Create
-Create:
-    svc #1
-    ret
+.global \func_name
+\func_name:
+svc #\svc_code
+        ret
+.endm
 
-
-.text
-.align 4
-.global Yield
-Yield:
-    svc #2
-    ret
-
-.text
-.align 4
-.global Exit
-Exit:
-    svc #3
-    ret
-
-.text
-.align 4
-.global MyTid
-MyTid:
-    svc #11
-    ret
-
-.text
-.align 4
-.global MyParentTid
-MyParentTid:
-    svc #12
-    ret
+make_svc Create      1
+make_svc Yield       2
+make_svc Exit        3
+make_svc MyTid       11
+make_svc MyParentTid 12

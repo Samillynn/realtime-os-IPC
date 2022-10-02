@@ -1,18 +1,8 @@
-#include "task.h"
-#include "exception.h"
 #include "syscall.h"
-#include "init.h"
+#include "init_kernel.h"
 #include "kernel.h"
-#include "user_tasks.h"
 
 i32 main() {
-    boot();
-    printf("Boot successfully\r\n");
-    handle_error();
-
-    printf("Start Program\r\n");
-    init();
-    printf("Kernel Program Exit\r\n");
-
-    return 0;
+    init_kernel();
+    kmain();
 }
