@@ -21,148 +21,148 @@ static i32 task_id_cnt;
 Task *current_task;
 
 void task_queue_init() {
-    current_task = NULL;
+  current_task = NULL;
 
-    for (usize i = 0; i < TASK_POOL_SIZE; i++) {
-        task_init(&task_pool[i]);
-        if (i < TASK_POOL_SIZE - 1) {
-            task_pool[i].next = &task_pool[i + 1];
-        } else {
-            task_pool[i].next = NULL;
-        }
+  for (usize i = 0; i < TASK_POOL_SIZE; i++) {
+    task_init(&task_pool[i]);
+    if (i < TASK_POOL_SIZE - 1) {
+      task_pool[i].next = &task_pool[i + 1];
+    } else {
+      task_pool[i].next = NULL;
     }
+  }
 
-    for (usize i = TASK_PRIORITY_MIN; i < TASK_PRIORITY_MAX; i++) {
-        task_queue[i].front = NULL;
-        task_queue[i].end = NULL;
-    }
+  for (usize i = TASK_PRIORITY_MIN; i < TASK_PRIORITY_MAX; i++) {
+    task_queue[i].front = NULL;
+    task_queue[i].end = NULL;
+  }
 
-    task_pool_ptr = &task_pool[0];
+  task_pool_ptr = &task_pool[0];
 
-    task_id_cnt = 0;
+  task_id_cnt = 0;
 }
 
 void task_queue_add(Task *task) {
-    i32 priority = task->priority;
+  i32 priority = task->priority;
 
-    if (task_queue[priority].end) {
-        task_queue[priority].end->next = task;
-        task_queue[priority].end = task_queue[priority].end->next;
-    } else {
-        task_queue[priority].end = task;
-        task_queue[priority].front = task;
-    }
+  if (task_queue[priority].end) {
+    task_queue[priority].end->next = task;
+    task_queue[priority].end = task_queue[priority].end->next;
+  } else {
+    task_queue[priority].end = task;
+    task_queue[priority].front = task;
+  }
 
-    task->next = NULL;
+  task->next = NULL;
 }
 
 Task* task_queue_get(i32 tid) {
-    for (i32 i = TASK_PRIORITY_MAX - 1; i >= TASK_PRIORITY_MIN; i--) {
-        Task* cur_task = task_queue[i].front;
-        while (cur_task) {
-            if (cur_task->tid == tid) {
-                return cur_task;
-            }
-            cur_task = cur_task->next;
-        }
+  for (i32 i = TASK_PRIORITY_MAX - 1; i >= TASK_PRIORITY_MIN; i--) {
+    Task* cur_task = task_queue[i].front;
+    while (cur_task) {
+      if (cur_task->tid == tid) {
+        return cur_task;
+      }
+      cur_task = cur_task->next;
     }
+  }
 
-    return NULL;
+  return NULL;
 }
 
 Task *task_queue_pop() {
-    Task *popped = NULL;
+  Task *popped = NULL;
 
-    for (i32 i = TASK_PRIORITY_MAX - 1; i >= TASK_PRIORITY_MIN; i--) {
-        if (task_queue[i].front) {
-            popped = task_queue[i].front;
-            if (task_queue[i].front->next) {
-                task_queue[i].front = task_queue[i].front->next;
-            } else {
-                task_queue[i].front = NULL;
-                task_queue[i].end = NULL;
-            }
-            break;
-        }
+  for (i32 i = TASK_PRIORITY_MAX - 1; i >= TASK_PRIORITY_MIN; i--) {
+    if (task_queue[i].front) {
+      popped = task_queue[i].front;
+      if (task_queue[i].front->next) {
+        task_queue[i].front = task_queue[i].front->next;
+      } else {
+        task_queue[i].front = NULL;
+        task_queue[i].end = NULL;
+      }
+      break;
     }
+  }
 
-    return popped;
+  return popped;
 }
 
 Task *task_queue_peek() {
-    Task *task = NULL;
+  Task *task = NULL;
 
-    for (i32 i = TASK_PRIORITY_MAX - 1; i >= TASK_PRIORITY_MIN; i--) {
-        if (task_queue[i].front) {
-            task = task_queue[i].front;
-            break;
-        }
+  for (i32 i = TASK_PRIORITY_MAX - 1; i >= TASK_PRIORITY_MIN; i--) {
+    if (task_queue[i].front) {
+      task = task_queue[i].front;
+      break;
     }
+  }
 
-    return task;
+  return task;
 }
 
-char stack[10000];
 Task *create_task(i32 priority, void (*func)(), i32 parent_tid) {
-    priority = i32_clamp(priority, TASK_PRIORITY_MIN, TASK_PRIORITY_MAX - 1);
-    Task *task = NULL;
+  priority = i32_clamp(priority, TASK_PRIORITY_MIN, TASK_PRIORITY_MAX - 1);
+  Task *task = NULL;
 
-    if (task_pool_ptr) {
-        task = task_pool_ptr;
-        task_pool_ptr = task->next;
-        task_init(task);
+  if (task_pool_ptr) {
+    task = task_pool_ptr;
+    task_pool_ptr = task->next;
+    task_init(task);
 
-        task->tid = task_id_cnt;
-        task_id_cnt += 1;
-        task->parent_tid = parent_tid;
-        task->priority = priority;
+    task->tid = task_id_cnt;
+    task_id_cnt += 1;
+    task->parent_tid = parent_tid;
+    task->priority = priority;
+    task->state = Ready;
 
-        task->memory_block = memory_allocate_block();
-        task->sp = (u64)memory_get_block_end(task->memory_block);
+    task->memory_block = memory_allocate_block();
+    task->sp = (u64)memory_get_block_end(task->memory_block);
 
-        task->pc = (u64)func;
-        task->x[30] = (u64)Exit;
+    task->pc = (u64)func;
+    task->x[30] = (u64)Exit;
 
-        task->spsr = 0;
+    task->spsr = 0;
 
-        task->next = NULL;
+    task->next = NULL;
 
-        task_queue_add(task);
-    } else {
-        printf("Task creating failed\r\n");
-    }
+    task_queue_add(task);
+  } else {
+    printf("Task creating failed\r\n");
+  }
 
-    return task;
+  return task;
 }
 
 void remove_current_task() {
-    memory_free_block(current_task->memory_block);
+  memory_free_block(current_task->memory_block);
 
-    task_init(current_task);
-    current_task = NULL;
+  task_init(current_task);
+  current_task = NULL;
 }
 
 Task *get_current_task() {
-    return current_task;
+  return current_task;
 }
 
+static Task *_blocked_tasks[TASK_POOL_SIZE];
 Task *schedule() {
-    if (current_task) {
-        task_queue_add(current_task);
-    }
+  if (current_task) {
+    task_queue_add(current_task);
+  }
 
+  Queue blocked_tasks;
+  queue_init(&blocked_tasks, (u64*)_blocked_tasks, TASK_POOL_SIZE);
+  printf("schedule init queue\r\n");
 
-    Task* _blocked_tasks[TASK_POOL_SIZE];
-    Queue blocked_tasks;
-    init_queue(&blocked_tasks, _blocked_tasks, TASK_POOL_SIZE);
-
-    Task* next_task = task_queue_pop();
-    while (next_task->state != Ready) {
-        push_queue(&blocked_tasks, next_task);
-        next_task = task_queue_pop();
-    }
-    while (!is_empty(&blocked_tasks)) {
-        task_queue_add(pop_queue(&blocked_tasks));
-    }
-    return next_task;
+  Task* next_task = task_queue_pop();
+  while (next_task && next_task->state != Ready) {
+    queue_push(&blocked_tasks, (u64)next_task);
+    next_task = task_queue_pop();
+  }
+  while (!queue_is_empty(&blocked_tasks)) {
+    task_queue_add((Task*)queue_pop(&blocked_tasks));
+  }
+  return next_task;
 }

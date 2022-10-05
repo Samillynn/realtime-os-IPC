@@ -20,5 +20,5 @@ void task_init(Task *self) {
     self->memory_block = NULL;
     self->next = NULL;
 
-    init_queue(&self->senders, self->sender_container, MAX_SENDER_CAPACITY);
+    queue_init(&self->senders, self->sender_container, MAX_SENDER_CAPACITY);
 }

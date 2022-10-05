@@ -87,8 +87,8 @@ RPSMsg* rps_msg_queue_pop(RPSMsgQueue* self) {
 }
 
 void rps_server() {
+  printf("rps_server_tid = %d\r\n", MyTid());
   RegisterAs("rps_server");
-  printf("rps_server_tid = %d\n", MyTid());
 
   MemoryPool memory_pool;
   memory_pool_init(&memory_pool);

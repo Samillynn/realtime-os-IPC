@@ -14,9 +14,9 @@ STRUCT(Queue) {
         int tail;
 };
 
-void init_queue(Queue *queue, u64 *container, int capacity);
-bool is_empty(Queue *queue);
-bool push_queue(Queue *queue, u64 elem);
-u64 pop_queue(Queue *queue);
+void queue_init(Queue *queue, u64 *container, int capacity);
+bool queue_is_empty(Queue *queue);
+bool queue_push(Queue *queue, u64 elem);
+u64 queue_pop(Queue *queue);
 
 #endif //K2_QUEUE_H
