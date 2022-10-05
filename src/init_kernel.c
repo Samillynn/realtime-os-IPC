@@ -9,6 +9,7 @@
 #include "printf.h"
 #include "task_scheduler.h"
 #include "exception.h"
+#include "message_passing.h"
 
 u64 _kernel_regs[31];
 u64* kernel_regs = _kernel_regs;
@@ -29,5 +30,8 @@ void init_exception_handlers() {
     exception_handlers[3] = sys_exit;
     exception_handlers[11] = sys_tid;
     exception_handlers[12] = sys_parent_tid;
+    exception_handlers[21] = sys_send;
+    exception_handlers[22] = sys_receive;
+    exception_handlers[23] = sys_reply;
 }
 

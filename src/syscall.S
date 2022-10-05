@@ -12,3 +12,6 @@ make_svc Yield       2
 make_svc Exit        3
 make_svc MyTid       11
 make_svc MyParentTid 12
+make_svc Send        21
+make_svc Receive     22
+make_svc Reply       23

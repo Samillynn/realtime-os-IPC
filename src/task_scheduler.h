@@ -15,6 +15,8 @@ void task_queue_init();
 
 void task_queue_add(Task *task);
 
+Task* task_queue_get(i32 tid);
+
 Task *task_queue_pop();
 
 Task *task_queue_peek();

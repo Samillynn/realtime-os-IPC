@@ -3,9 +3,15 @@
 
 #include "common.h"
 #include "memory_block.h"
+#include "queue.h"
 
 #define TASK_PRIORITY_MIN 0
 #define TASK_PRIORITY_MAX 10
+#define MAX_SENDER_CAPACITY 64
+
+enum TaskState {
+    Active, Ready, WaitSend, WaitReceive, WaitReply
+};
 
 STRUCT(Task) {
     u64 x[31];
@@ -16,11 +22,17 @@ STRUCT(Task) {
     u32 tid;
     u32 parent_tid;
     u32 priority;
+    enum TaskState state;
+
+    u64 sender_container[MAX_SENDER_CAPACITY];
+    Queue senders;
+
 
     MemoryBlock *memory_block;
     Task *next;
 };
 
-void task_init(Task* self);
+void task_init(Task *self);
+void return_to(Task* task, u64 result);
 
 #endif

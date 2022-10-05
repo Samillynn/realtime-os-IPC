@@ -56,6 +56,20 @@ void task_queue_add(Task *task) {
     task->next = NULL;
 }
 
+Task* task_queue_get(i32 tid) {
+    for (i32 i = TASK_PRIORITY_MAX - 1; i >= TASK_PRIORITY_MIN; i--) {
+        Task* cur_task = task_queue[i].front;
+        while (cur_task) {
+            if (cur_task->tid == tid) {
+                return cur_task;
+            }
+            cur_task = cur_task->next;
+        }
+    }
+
+    return NULL;
+}
+
 Task *task_queue_pop() {
     Task *popped = NULL;
 
@@ -137,5 +151,18 @@ Task *schedule() {
         task_queue_add(current_task);
     }
 
-    return task_queue_pop();
+
+    Task* _blocked_tasks[TASK_POOL_SIZE];
+    Queue blocked_tasks;
+    init_queue(&blocked_tasks, _blocked_tasks, TASK_POOL_SIZE);
+
+    Task* next_task = task_queue_pop();
+    while (next_task->state != Ready) {
+        push_queue(&blocked_tasks, next_task);
+        next_task = task_queue_pop();
+    }
+    while (!is_empty(&blocked_tasks)) {
+        task_queue_add(pop_queue(&blocked_tasks));
+    }
+    return next_task;
 }

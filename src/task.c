@@ -1,6 +1,10 @@
 #include "task.h"
 #include "printf.h"
 
+void return_to(Task* task, u64 result) {
+    task->x[0] = result;
+}
+
 void task_init(Task *self) {
     self->tid = -1;
     self->parent_tid = -1;
@@ -15,4 +19,6 @@ void task_init(Task *self) {
 
     self->memory_block = NULL;
     self->next = NULL;
+
+    init_queue(&self->senders, self->sender_container, MAX_SENDER_CAPACITY);
 }
