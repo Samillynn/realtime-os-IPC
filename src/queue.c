@@ -25,10 +25,8 @@ bool is_full(Queue *queue) {
     int after_tail = modular_inc(queue->tail, queue->capacity);
     if (queue->head == after_tail) {
         return true;
-    } else {
-        return false;
     }
-
+    return false;
 }
 
 bool push_queue(Queue *queue, u64 elem) {
@@ -41,6 +39,8 @@ bool push_queue(Queue *queue, u64 elem) {
     int new_tail = modular_inc(queue->tail, queue->capacity);
     queue->container[queue->tail] = elem;
     queue->tail = new_tail;
+
+    return true;
 }
 
 u64 pop_queue(Queue *queue) {
