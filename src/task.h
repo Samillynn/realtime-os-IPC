@@ -19,9 +19,9 @@ STRUCT(Task) {
     u64 spsr;
     u64 pc;
 
-    u32 tid;
-    u32 parent_tid;
-    u32 priority;
+    i32 tid;
+    i32 parent_tid;
+    i32 priority;
     enum TaskState state;
 
     u64 sender_container[MAX_SENDER_CAPACITY];

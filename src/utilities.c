@@ -1,4 +1,6 @@
 #include "utilities.h"
+#include "common.h"
+#include "bcm2711.h"
 
 void* memset(void* s, i32 c, usize n) {
   for (u8* it = (u8*)s; n > 0; n --) {
@@ -240,4 +242,18 @@ cstring cstring_get_token(const cstring line, usize line_len, usize idx, usize* 
   }
 
   return token;
+}
+
+STRUCT(SYSTEM_TIMER) {
+  u32 CS;
+  u32 CLO;
+  u32 CHI;
+  u32 C[4];
+};
+
+static volatile SYSTEM_TIMER* const system_timer = (SYSTEM_TIMER*)(SYSTEM_TIMER_BASE);
+
+u32 get_random_u32(u32 min, u32 max) {
+  u32 v = system_timer->CLO;
+  return v % (max - min) + min;
 }

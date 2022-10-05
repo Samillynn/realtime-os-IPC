@@ -5,4 +5,6 @@
 i32 main() {
     init_kernel();
     kmain();
+
+    return 0;
 }

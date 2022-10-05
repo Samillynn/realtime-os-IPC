@@ -21,7 +21,7 @@ void kmain() {
             handle_exception(request);
         } else {
             printf("All user tasks have finished, exit elegantly\r\n");
-            return 0;
+            return;
         }
     }
     printf("Kernel Program Exit\r\n");

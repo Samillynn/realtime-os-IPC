@@ -114,7 +114,7 @@ void sys_reply() {
     Task *sender = task_queue_get(args->tid);
 
     if (sender == NULL) {
-        printf("Sender tid: %d is invalid", sender_id);
+        printf("Sender tid: %d is invalid", args->tid);
         return_to(receiver, -1);
         return;
     }

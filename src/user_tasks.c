@@ -5,20 +5,23 @@
 #include "user_tasks.h"
 #include "syscall.h"
 #include "printf.h"
+#include "name_server.h"
+#include "rps_server.h"
 
 void initial_user_task() {
-    int priorities[4] = {INITIAL_PRIORITY - 2, INITIAL_PRIORITY - 1, INITIAL_PRIORITY + 1, INITIAL_PRIORITY + 2};
-    for (int i = 0; i < 4; i++) {
-        int tid = Create(priorities[i], demo_user_task);
-        printf("Created: %d\r\n\n", tid);
-    }
-    printf("FirstUserTask: exiting\r\n\n");
-    Exit();
+  printf("start initial user task\r\n");
+  i32 tid;
+
+  tid = Create(9, name_server);
+  printf("name server created\r\n");
+  tid = Create(8, rps_server);
+  printf("rps server created\r\n");
+
+  for (usize i = 0; i < 2; i ++) {
+    tid = Create(7, rps_client);
+    printf("client %lu created\r\n", i);
+  }
+
+  Exit();
 }
 
-void demo_user_task() {
-    printf("Tid: %d, ParentTid: %d\r\n\n", MyTid(), MyParentTid());
-    Yield();
-    printf("Tid: %d, ParentTid: %d\r\n\n", MyTid(), MyParentTid());
-    Exit();
-}
