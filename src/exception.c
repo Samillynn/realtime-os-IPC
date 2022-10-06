@@ -13,18 +13,10 @@ u64 activate(Task *task) {
   current_task = task;
   current_task->x[0] = current_task->result;
 
-  printf("Activate task tid=%d\r\n", current_task->tid);
   return activate_current_task();
 }
 
 void handle_exception(u64 esr) {
-  printf("Task %d\r\n", current_task->tid);
-  for(int i = 0; i < 5; i++) {
-    printf("  Reg[%d]=%d\r\n", i, current_task->x[i]);
-  }
-  printf("  Reg[30]=%d\r\n", current_task->x[30]);
-  printf("  PC=%p\r\n", current_task->pc);
-
   u8 exception_class = (esr >> EXCEPTION_CLASS_OFFSET);
   if (exception_class == SVC_CLASS) {
     u16 imm = esr; // cast to the last 16 bits

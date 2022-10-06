@@ -24,14 +24,13 @@ void name_server() {
   hash_table_init(&hash_table);
 
   name_server_tid = MyTid();
-  printf("name_server_tid = %d\r\n", name_server_tid);
 
   i32 tid;
   NameServerMsg msg;
 
   while (Receive(&tid, (cstring)&msg, sizeof(NameServerMsg))) {
-    printf("    [name_server]: Received tid: %d, msg(%d, %s, %d)\r\n",
-           tid, msg.action, msg.name, msg.tid);
+//    printf("    [name_server]: Received tid: %d, msg(%d, %s, %d)\r\n",
+//           tid, msg.action, msg.name, msg.tid);
     switch (msg.action) {
     case REGISTER_AS: {
       hash_table_add(&hash_table, msg.name, tid);
@@ -50,26 +49,26 @@ void name_server() {
     default: break;
     }
 
-    printf("    [name_server][from %d]: calling Reply(%d, msg[%d, %s, %d])\r\n",
-           MyTid(), tid, msg.action, msg.name, msg.tid);
+//    printf("    [name_server][from %d]: calling Reply(%d, msg[%d, %s, %d])\r\n",
+//           MyTid(), tid, msg.action, msg.name, msg.tid);
     Reply(tid, (cstring)&msg, sizeof(NameServerMsg));
   }
 }
 
 i32 RegisterAs(const cstring name) {
-  printf("called RegisterAs(%s)\r\n", name);
+//  printf("called RegisterAs(%s)\r\n", name);
   NameServerMsg msg; {
     msg.action = REGISTER_AS;
     msg.name = name;
     msg.tid = MyTid();
   }
 
-  printf("    [RegisterAs][from %d]: Send(%d, ...)\r\n", MyTid(), name_server_tid);
+//  printf("    [RegisterAs][from %d]: Send(%d, ...)\r\n", MyTid(), name_server_tid);
   if (Send(name_server_tid, (cstring)&msg, sizeof(NameServerMsg), (cstring)&msg, sizeof(NameServerMsg)) < 0) {
     return -1;
   }
-  printf("RegisterAs send finished\r\n");
-  printf("pc=%p, x30=%p\r\n", current_task->pc, current_task->x[30]);
+//  printf("RegisterAs send finished\r\n");
+//  printf("pc=%p, x30=%p\r\n", current_task->pc, current_task->x[30]);
 
 //  int x30;
 //  asm("mov x30,%0" : "=r"(x30));
@@ -86,8 +85,8 @@ i32 WhoIs(const char *name) {
     msg.name = name;
     msg.tid = MyTid();
   }
-  printf("    [WhoIs][from %d]: Send(%d, msg[%d, %s, %d])\n",
-         MyTid(), name_server_tid, msg.action, msg.name, msg.tid);
+//  printf("    [WhoIs][from %d]: Send(%d, msg[%d, %s, %d])\n",
+//         MyTid(), name_server_tid, msg.action, msg.name, msg.tid);
 
   if (Send(name_server_tid,
            (cstring)&msg,

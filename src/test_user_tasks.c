@@ -6,25 +6,25 @@
 #include "timer.h"
 
 void task_a() {
-  printf("Tid of A: %d\r\n", MyTid());
+//  printf("Tid of A: %d\r\n", MyTid());
   int tid = 1234;
-  printf("*tid = %p\r\n", &tid);
+//  printf("*tid = %p\r\n", &tid);
   char a[10];
   int len_msg = Receive(&tid, a, 10);
-  printf("Received from %d: %s with length:%d\r\n", tid, a, len_msg);
+//  printf("Received from %d: %s with length:%d\r\n", tid, a, len_msg);
   char r[] = "bye";
   Reply(tid, r, sizeof r);
 }
 
 void task_b() {
-  printf("Tid of B: %d\r\n", MyTid());
+//  printf("Tid of B: %d\r\n", MyTid());
   char msg[] = "Hello!";
   char reply[10];
   u32 time_a = timer_get_system_time_count();
   int len_reply = Send(1, msg, sizeof msg, reply, 10);
   u32 time_b = timer_get_system_time_count();
   u32 delta_time = time_b - time_a;
-  printf("got reply %s with length:%d\r\n", reply, len_reply);
+//  printf("got reply %s with length:%d\r\n", reply, len_reply);
 
   time_a = timer_get_system_time_count();
   time_b = timer_get_system_time_count();

@@ -52,5 +52,5 @@ u32 timer_get_sec10(Timer *self) { return self->sec10; }
 u32 timer_get_system_time_count() { return system_timer->CLO; }
 
 u32 timer_count_to_ms(u32 count) {
-  return count / TIMER_FREQ;
+  return count;
 }
