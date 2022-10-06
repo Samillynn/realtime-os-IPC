@@ -4,7 +4,7 @@
 // SCTLR_EL1, System Control Register (EL1)
 // Architecture Reference Manual Section D13.2.118
 // ***************************************
-#define SCTLR_RESERVED (3 << 28) | (3 << 22) | (1 << 20) | (1 << 11)
+#define SCTLR_RESERVED (3 << 28) | (3 << 22) | (1 << 20) | (1 << 11) | (1 << 2) | (1 << 12)
 #define USER_MASK_ACCESS (1 << 9)
 #define SCTLR_WFE_WFI_ENABLED (1 << 18 | 1<<16)
 #define SCTLR_VALUE_MMU_DISABLED (SCTLR_RESERVED | USER_MASK_ACCESS | SCTLR_WFE_WFI_ENABLED)

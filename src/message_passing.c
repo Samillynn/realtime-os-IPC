@@ -62,7 +62,7 @@ void synchronized_send_receive(Task *sender, const char *msg_from, int len_msg_f
   //        return;
   //    }
 
-  //    *get_receive_args(receiver)->tid = sender->tid;
+//      *get_receive_args(receiver)->tid = sender->tid;
 
   int actual_len = copy_message(msg_from, len_msg_from, msg_to, len_msg_to);
   return_to(receiver, actual_len);
@@ -82,7 +82,7 @@ void sys_send() {
   Task *receiver = task_queue_get(args->tid);
 
   if (receiver == NULL) {
-    printf("Receiver tid not found\r\n");
+    printf("Receiver tid: %d not found\r\n", args->tid);
     return_to(sender, -1);
     return;
   }

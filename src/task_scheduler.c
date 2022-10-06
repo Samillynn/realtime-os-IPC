@@ -161,11 +161,11 @@ Task *schedule() {
   while (next_task && next_task->state != Ready) {
 //    printf("push tid(%d)\r\n", next_task->tid);
 //    queue_print(&blocked_tasks);
-//    queue_push(&blocked_tasks, (u64)next_task);
+    queue_push(&blocked_tasks, (u64)next_task);
     next_task = task_queue_pop();
   }
   while (!queue_is_empty(&blocked_tasks)) {
-    queue_print(&blocked_tasks);
+//    queue_print(&blocked_tasks);
     task_queue_add((Task*)queue_pop(&blocked_tasks));
   }
   return next_task;
