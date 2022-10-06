@@ -6,7 +6,9 @@
 
 # Build Instructions
 ## download
-
+```
+git clone https://git.uwaterloo.ca/h44ding/cs452_k2.git --branch renhang
+```
 ## build
 ```bash
 cd cs452_k2
@@ -43,6 +45,7 @@ For simplicity, we have a simple memory pool for simple dynamic memory allocatio
 
 ## Limitations
 ## Bugs
+In the rps server, after calling RegisterAs the control flow will not be able to get back to where it should resume. The return address x30 becomes an invalid value which causes an unsupported exception. A simple Send Receive Reply can be correctly executed without this issue but a complicated scenario involving the name server and rps server will cause such issue. We might require more external assistance for resolving this issue. It is difficult to keep track of the x30 value as printing the register in assembly caused other bugs. We tried to store the registers onto a certain part of the memory but when we tried to access it later those registers do not seem to be the actual ones we need to know.
 # Output Descriptions
 RPS game output:
 ```
