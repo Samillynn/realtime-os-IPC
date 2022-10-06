@@ -148,20 +148,26 @@ Task *get_current_task() {
 
 static Task *_blocked_tasks[TASK_POOL_SIZE];
 Task *schedule() {
+  printf("tid(%d) in schedule: x[0]=%d,x[1]=%d\r\n", current_task->tid, current_task->x[0], current_task->x[1]);
   if (current_task) {
     task_queue_add(current_task);
   }
+  printf("tid(%d) in schedule: x[0]=%d,x[1]=%d\r\n", current_task->tid, current_task->x[0], current_task->x[1]);
 
   Queue blocked_tasks;
   queue_init(&blocked_tasks, (u64*)_blocked_tasks, TASK_POOL_SIZE);
   printf("schedule init queue\r\n");
 
+  printf("tid(%d) in schedule: x[0]=%d,x[1]=%d\r\n", current_task->tid, current_task->x[0], current_task->x[1]);
   Task* next_task = task_queue_pop();
   while (next_task && next_task->state != Ready) {
+    printf("push tid(%d)\r\n", next_task->tid);
+    queue_print(&blocked_tasks);
     queue_push(&blocked_tasks, (u64)next_task);
     next_task = task_queue_pop();
   }
   while (!queue_is_empty(&blocked_tasks)) {
+    queue_print(&blocked_tasks);
     task_queue_add((Task*)queue_pop(&blocked_tasks));
   }
   return next_task;

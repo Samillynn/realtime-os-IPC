@@ -2,7 +2,7 @@
 #include "printf.h"
 
 void return_to(Task* task, u64 result) {
-    task->x[0] = result;
+    task->result = result;
 }
 
 void task_init(Task *self) {

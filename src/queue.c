@@ -5,6 +5,7 @@
 #include "queue.h"
 #include "common.h"
 #include "printf.h"
+#include "task.h"
 
 int modular_inc(int x, int mod) {
     return (x + 1) % mod;
@@ -27,6 +28,14 @@ bool queue_is_full(Queue *queue) {
         return true;
     }
     return false;
+}
+
+void queue_print(Queue *queue) {
+  for(int i = queue->head; i < queue->tail; i++) {
+    Task* t = (Task*) queue->container[i];
+    printf("task[%d]-x0=%d; ", t->tid, t->x[0]);
+  }
+  printf("\r\n");
 }
 
 bool queue_push(Queue *queue, u64 elem) {

@@ -90,12 +90,15 @@ void test_reply() {
 void test_receive_first() {
     current_task = receiver;
     ReceiveArgs * rec = get_receive_args(receiver);
+
     int* tid = malloc(8);
     rec->tid = tid;
     rec->msg = malloc(100);
     rec->msg_len = 100;
 
+    print_receive(rec);
     sys_receive();
+    print_receive(rec);
 
     assert(receiver->state == WaitReceive);
 }
@@ -148,18 +151,20 @@ void test_multiple_senders() {
 
 int main() {
     test_init();
-    test_send_first(sender);
-    test_receive_after_send(1);
-    test_reply();
-
-
-    test_send_first(sender);
-    test_receive_after_send(1);
-    test_reply();
-
     test_receive_first();
-    test_send_after_receive();
-    test_reply();
-
-    test_multiple_senders();
+//    test_init();
+//    test_send_first(sender);
+//    test_receive_after_send(1);
+//    test_reply();
+//
+//
+//    test_send_first(sender);
+//    test_receive_after_send(1);
+//    test_reply();
+//
+//    test_receive_first();
+//    test_send_after_receive();
+//    test_reply();
+//
+//    test_multiple_senders();
 }
