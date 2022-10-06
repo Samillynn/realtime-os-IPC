@@ -87,14 +87,18 @@ RPSMsg* rps_msg_queue_pop(RPSMsgQueue* self) {
 }
 
 void rps_server() {
+  printf("rps_server\r\n");
   printf("rps_server_tid = %d\r\n", MyTid());
   RegisterAs("rps_server");
+  printf("rps_server successfully registered in name_server\r\n");
 
   MemoryPool memory_pool;
   memory_pool_init(&memory_pool);
+  printf("memory pool init\r\n");
 
   RPSMsgQueue signup_queue;
   rps_msg_queue_init(&signup_queue);
+  printf("rps_msg_queue_init\r\n");
 
   enum RPSPlayAction play_actions[64];
   for (usize i = 0; i < 64; i ++) {
@@ -105,6 +109,7 @@ void rps_server() {
   RPSMsg msg;
 
   while (Receive(&tid, (cstring)&msg, sizeof(RPSMsg))) {
+    printf("received msg[%d, %s] from %d\r\n", msg.action, msg.name, tid);
     switch (msg.action) {
     case SIGNUP: {
       printf("SIGNUP\r\n");

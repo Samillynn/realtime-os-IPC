@@ -17,6 +17,7 @@ void kmain() {
     while(1) {
         Task *task = schedule();
         if (task != NULL) {
+            printf("Scheduled task id is: %d\r\n", task->tid);
             int request = activate(task);
             handle_exception(request);
         } else {

@@ -2,6 +2,7 @@
 #include "syscall.h"
 #include "hash_table.h"
 #include "printf.h"
+#include "task_scheduler.h"
 
 enum NameServerAction {
   REGISTER_AS,
@@ -67,6 +68,12 @@ i32 RegisterAs(const cstring name) {
   if (Send(name_server_tid, (cstring)&msg, sizeof(NameServerMsg), (cstring)&msg, sizeof(NameServerMsg)) < 0) {
     return -1;
   }
+  printf("RegisterAs send finished\r\n");
+  printf("pc=%p, x30=%p\r\n", current_task->pc, current_task->x[30]);
+
+//  int x30;
+//  asm("mov x30,%0" : "=r"(x30));
+//  printf("x30=%d\r\n", x30);
 
   return 0;
 }

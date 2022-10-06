@@ -9,26 +9,33 @@
 #include "../src/message_passing.h"
 
 
-void printf_( const char* format, ... )
-{
-    va_list arglist;
+void printf_(const char *format, ...) {
+  va_list arglist;
 
-    va_start( arglist, format );
-    vprintf( format, arglist );
-    va_end( arglist );
+  va_start(arglist, format);
+  vprintf(format, arglist);
+  va_end(arglist);
 }
 
-void print_task(Task* t) {
-    for(int i = 0; i < 8; i++) {
-        printf_("x[%d] = %llu\r\n", i, t->x[i]);
-    }
-    printf_("tid = %d\r\n", t->tid);
+void print_task(Task *t) {
+  for (int i = 0; i < 8; i++) {
+    printf_("x[%d] = %llu\r\n", i, t->x[i]);
+  }
+  printf_("tid = %d\r\n", t->tid);
 }
 
-void print_send(SendArgs* send) {
-    printf_("tid=%d, msg=%s, msg_len=%d, reply=%s, reply_len=%d\r\n", send->tid, send->msg, send->msg_len, send->reply, send->reply_len);
+void print_send(SendArgs *send_args) {
+  printf_("    [sys_send]: [send_args] tid=%d, msg=%s, msg_len=%d, reply(%p)=%s, reply_len=%d\r\n",
+          send_args->tid, send_args->msg, send_args->msg_len, send_args->reply, send_args->reply,
+          send_args->reply_len);
 }
 
-void print_receive(ReceiveArgs* receive) {
-    printf_("length/tid=%d, msg=%s, msg_len=%d\r\n", receive->tid, receive->msg, receive->msg_len);
+void print_receive(ReceiveArgs *args) {
+  printf_("    [sys_receive]: length/tid=%d, msg=%s, msg_len=%d\r\n", args->tid, args->msg,
+          args->msg_len);
+}
+
+void print_reply(ReplyArgs *args) {
+  printf_("    [sys_reply]: [args] tid=%d, reply(%p)=%s, reply_len=%d\r\n",
+          args->tid, args->reply, args->reply, args->reply_len);
 }

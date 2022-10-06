@@ -4,6 +4,22 @@
 #include "utilities.h"
 #include "task_scheduler.h"
 
+void print_send(SendArgs *send_args) {
+  printf("    [sys_send]: [send_args] tid=%d, msg=%s, msg_len=%d, reply(%p)=%s, reply_len=%d\r\n",
+          send_args->tid, send_args->msg, send_args->msg_len, send_args->reply, send_args->reply,
+          send_args->reply_len);
+}
+
+void print_receive(ReceiveArgs *args) {
+  printf("    [sys_receive]: *tid=%d, msg=%p, msg_len=%d\r\n", args->tid, args->msg,
+          args->msg_len);
+}
+
+void print_reply(ReplyArgs *args) {
+  printf("    [sys_reply]: [args] tid=%d, reply(%p)=%s, reply_len=%d\r\n",
+          args->tid, args->reply, args->reply, args->reply_len);
+}
+
 bool register_sender(Task *receiver, Task *sender) {
   printf("register_sender\r\n");
   return queue_push(&receiver->senders, sender->tid);
@@ -15,15 +31,15 @@ int next_sender(Task *receiver) {
 }
 
 SendArgs *get_send_args(Task *task) {
-  return (SendArgs*) task->x;
+  return (SendArgs *) task->x;
 }
 
 ReceiveArgs *get_receive_args(Task *task) {
-  return (ReceiveArgs*) task->x;
+  return (ReceiveArgs *) task->x;
 }
 
 ReplyArgs *get_reply_args(Task *task) {
-  return (ReplyArgs*) task->x;
+  return (ReplyArgs *) task->x;
 }
 
 int copy_message(const char *msg_from, int len_msg_from, char *msg_to, int len_msg_to) {
@@ -56,8 +72,13 @@ void synchronized_send_receive(Task *sender, const char *msg_from, int len_msg_f
 
 
 void sys_send() {
+  printf("Beginning of send\r\n");
+  print_receive(task_queue_get(1));
+  print_send(current_task);
+  printf("send x[0]=%d\r\n", current_task->x[0]);
+
   Task *sender = get_current_task();
-  SendArgs* args = get_send_args(sender);
+  SendArgs *args = get_send_args(sender);
   Task *receiver = task_queue_get(args->tid);
 
   if (receiver == NULL) {
@@ -69,8 +90,17 @@ void sys_send() {
   if (receiver->state == WaitReceive) {
     ReceiveArgs *receive_args = get_receive_args(receiver);
 
-    *receive_args->tid = sender->tid;
+    printf("before assign: sender_id:%d, rec_tid:%d\r\n", sender->tid, *(receive_args->tid));
+    *(receive_args->tid) = sender->tid;
+    printf("after assign: sender_id:%d, rec_tid:%d\r\n", sender->tid, *(receive_args->tid));
+
+    printf("Before copy in send\r\n");
+    print_receive(task_queue_get(1));
+    print_send(current_task);
     synchronized_send_receive(sender, args->msg, args->msg_len, receiver, receive_args->msg, receive_args->msg_len);
+    printf("After copy in send\r\n");
+    print_receive(task_queue_get(1));
+    print_send(current_task);
     // block sender
     sender->state = WaitReply;
   } else {
@@ -83,16 +113,30 @@ void sys_send() {
       return_to(sender, -2);
     }
   }
+
+
+  printf("End of send\r\n");
+  print_receive(task_queue_get(1));
+  print_send(current_task);
 }
 
 /** make the return value of Receive be -1 if the sender terminated before receiving **/
 void sys_receive() {
+  printf("Beginning of receive\r\n");
+  print_receive(current_task);
+
   Task *receiver = get_current_task();
   ReceiveArgs *args = get_receive_args(receiver);
 
   if (queue_is_empty(&receiver->senders)) {
     printf("sender queue is empty, block receiver\r\n");
+
+    printf("Before change state in receive\r\n");
+    print_receive(current_task);
+
     receiver->state = WaitReceive;
+    printf("After change state in receive\r\n");
+    print_receive(get_receive_args(current_task));
     return;
   }
 
@@ -104,17 +148,33 @@ void sys_receive() {
     return;
   }
 
+  printf("Before copy in receive\r\n");
+  print_receive(current_task);
+
   SendArgs *send_args = get_send_args(sender);
-  printf("    [sys_receive]: length/tid=%d, msg=%s, msg_len=%d\r\n", args->tid, args->msg,
-          args->msg_len);
+
+  printf("After copy in receive\r\n");
+  print_receive(current_task);
+
   *args->tid = sender->tid;
+  printf("After change *tid in receive\r\n");
+  print_receive(current_task);
   synchronized_send_receive(sender, send_args->msg, send_args->msg_len, receiver, args->msg, args->msg_len);
 
   sender->state = WaitReply;
+
+  printf("End of receive\r\n");
+  print_receive(current_task);
 }
 
 void sys_reply() {
-  Task* receiver = get_current_task();
+  print_reply(current_task);
+  print_send(task_queue_get(2));
+  printf("Beginning of reply\r\n");
+  print_reply(current_task);
+  print_send(task_queue_get(2));
+
+  Task *receiver = get_current_task();
   ReplyArgs *args = get_reply_args(receiver);
   printf("    [sys_reply]: [args] tid=%d, reply(%p)=%s, reply_len=%d\r\n",
          args->tid, args->reply, args->reply, args->reply_len);
@@ -131,5 +191,14 @@ void sys_reply() {
   printf("    [sys_reply]: [send_args] tid=%d, msg=%s, msg_len=%d, reply(%p)=%s, reply_len=%d\r\n",
          send_args->tid, send_args->msg, send_args->msg_len, send_args->reply, send_args->reply,
          send_args->reply_len);
+
+  printf("before copy in reply\r\n");
+  print_reply(current_task);
+  print_send(task_queue_get(2));
   synchronized_send_receive(receiver, args->reply, args->reply_len, sender, send_args->reply, send_args->reply_len);
+
+
+  printf("End of reply\r\n");
+  print_reply(current_task);
+  print_send(task_queue_get(2));
 }
