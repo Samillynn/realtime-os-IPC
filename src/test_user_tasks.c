@@ -23,15 +23,15 @@ void task_b() {
   printf("got reply %s with length:%d\r\n", reply, len_reply);
 }
 
-void initial_user_task() {
-  printf("start initial user task\r\n");
-  i32 tid;
-
-  tid = Create(9, task_a);
-  printf("A created\r\n");
-
-  tid = Create(8, task_b);
-  printf("B created\r\n");
-
-  Exit();
-}
+//void initial_user_task() {
+//  printf("start initial user task\r\n");
+//  i32 tid;
+//
+//  tid = Create(9, task_a);
+//  printf("A created\r\n");
+//
+//  tid = Create(8, task_b);
+//  printf("B created\r\n");
+//
+//  Exit();
+//}

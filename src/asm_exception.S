@@ -14,7 +14,6 @@ exception_entry:
 .align 4
 .text
 .global activate_current_task
-/** @arg current_task **/
 /** Context switch back to current_task **/
 
 activate_current_task:
