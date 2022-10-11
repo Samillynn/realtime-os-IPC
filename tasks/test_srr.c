@@ -2,8 +2,8 @@
 // Created by 28379 on 10/5/2022.
 //
 #include "syscall.h"
-#include "printf.h"
-#include "timer.h"
+#include "../src/printf.h"
+#include "../src/timer.h"
 
 int msg_len = 0;
 int receiver_id;
@@ -37,23 +37,23 @@ void task_b() {
 }
 
 
-void initial_user_task() {
- printf("start initial user task\r\n");
- i32 tid;
+void test_send_receive() {
+  printf("start initial user task\r\n");
+  i32 tid;
 
- msg_len = 4;
- receiver_id = 1;
- Create(8, task_a);
- Create(8, task_b);
+  msg_len = 4;
+  receiver_id = 1;
+  Create(8, task_a);
+  Create(8, task_b);
 
- receiver_id = 3;
- msg_len = 64;
- Create(8, task_a);
- Create(8, task_b);
+  receiver_id = 3;
+  msg_len = 64;
+  Create(8, task_a);
+  Create(8, task_b);
 
- receiver_id = 5;
- msg_len = 256;
- Create(8, task_a);
- Create(8, task_b);
- Exit();
+  receiver_id = 5;
+  msg_len = 256;
+  Create(8, task_a);
+  Create(8, task_b);
+  Exit();
 }

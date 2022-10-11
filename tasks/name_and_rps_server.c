@@ -4,11 +4,11 @@
 
 #include "user_tasks.h"
 #include "syscall.h"
-#include "printf.h"
-#include "name_server.h"
-#include "rps_server.h"
+#include "../src/printf.h"
+#include "../src/name_server.h"
+#include "../src/rps_server.h"
 
-void _initial_user_task() {
+void name_and_rps_server() {
   printf("start initial user task\r\n");
   i32 tid;
   tid = Create(9, name_server);
