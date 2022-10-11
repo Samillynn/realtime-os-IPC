@@ -5,4 +5,6 @@
 #ifndef K2_TEST_SRR_H
 #define K2_TEST_SRR_H
 
+void test_srr();
+
 #endif //K2_TEST_SRR_H

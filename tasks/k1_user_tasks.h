@@ -1,8 +1,12 @@
 //
-// Created by 28379 on 10/6/2022.
+// Created by 28379 on 9/25/2022.
 //
 
-#ifndef K2_K1_USER_TASKS_H
-#define K2_K1_USER_TASKS_H
+#ifndef __K1_USER_TASK__
+#define __K1_USER_TASK__
 
-#endif //K2_K1_USER_TASKS_H
+#define INITIAL_PRIORITY 5
+
+void k1_first_user_task();
+
+#endif

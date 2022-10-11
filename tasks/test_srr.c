@@ -1,7 +1,7 @@
 //
 // Created by 28379 on 10/5/2022.
 //
-#include "syscall.h"
+#include "../src/syscall.h"
 #include "../src/printf.h"
 #include "../src/timer.h"
 
@@ -37,7 +37,7 @@ void task_b() {
 }
 
 
-void test_send_receive() {
+void test_srr() {
   printf("start initial user task\r\n");
   i32 tid;
 

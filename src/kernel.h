@@ -5,6 +5,7 @@
 #include "task.h"
 
 extern u64* kernel_regs;
+extern void (*initial_user_task)(void);
 void boot();
 void kmain();
 

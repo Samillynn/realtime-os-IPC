@@ -3,10 +3,13 @@
 
 #include "common.h"
 
-i32 sys_create();
-i32 sys_tid();
-i32 sys_parentTid();
+void sys_create();
+void sys_tid();
+void sys_parentTid();
 void sys_yield();
 void sys_exit();
+void sys_send();
+void sys_receive();
+void sys_reply();
 
 #endif

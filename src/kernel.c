@@ -2,10 +2,11 @@
 #include "common.h"
 #include "task_scheduler.h"
 #include "task.h"
-#include "user_tasks.h"
+#include "../tasks/name_and_rps_server.h"
 #include "printf.h"
 #include "exception.h"
 
+void (*initial_user_task)(void);
 
 void init_first_user_task() {
     create_task(INITIAL_PRIORITY, initial_user_task, -1);

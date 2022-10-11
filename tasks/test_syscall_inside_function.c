@@ -7,11 +7,11 @@
 #include "../src/printf.h"
 
 int test_id() {
-  return (MyTid() + MyParentTid()) * (MyTid() - MyParentTid());
+  return (10 + MyTid() + MyParentTid()) * (10 + MyTid() - MyParentTid());
 }
 
 void test_syscall_inside_function() {
   printf("Start program\r\n");
-  printf("test tid&pid: %d\r\n", test_id());
+  printf("test tid&pid: %d\r\n", test_id() * test_id());
   printf("Finishing program\r\n");
 }

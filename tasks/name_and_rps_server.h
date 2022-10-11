@@ -7,8 +7,6 @@
 
 #define INITIAL_PRIORITY 5
 
-void initial_user_task();
-
-void demo_user_task();
+void name_and_rps_server();
 
 #endif

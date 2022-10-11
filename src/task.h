@@ -18,7 +18,9 @@ STRUCT(Task) {
     u64 sp;
     u64 spsr;
     u64 pc;
+    u64 x30_copy;
     u64 result;
+    bool should_pass_result;
 
     i32 tid;
     i32 parent_tid;
@@ -34,6 +36,6 @@ STRUCT(Task) {
 };
 
 void task_init(Task *self);
-void return_to(Task* task, u64 result);
+void assign_result(Task* task, u64 result);
 
 #endif

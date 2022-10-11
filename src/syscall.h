@@ -3,13 +3,13 @@
 
 #include "common.h"
 
-extern i32 Create(i32 priority, void (*function)());
-extern i32 MyTid();
-extern i32 MyParentTid();
-extern void Yield();
-extern void Exit();
-extern int Send(int tid, const char *msg, int len_msg, char *reply, int len_reply);
-extern int Receive(int *tid, char *msg, int len_msg);
-extern int Reply(int tid, const char *reply, int len_reply);
+i32 Create(i32 priority, void (*function)());
+i32 MyTid();
+i32 MyParentTid();
+void Yield();
+void Exit();
+i32 Send(int tid, const char *msg, int msglen, char *reply, int replylen);
+i32 Receive(int *tid, char *msg, int msglen);
+i32 Reply(int tid, void *reply, int replylen);
 
 #endif

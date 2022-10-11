@@ -4,6 +4,7 @@
 #include "printf.h"
 #include "rps_server.h"
 #include "syscall.h"
+#include "task_scheduler.h"
 #include "utilities.h"
 
 enum RPSAction {
@@ -87,9 +88,12 @@ RPSMsg* rps_msg_queue_pop(RPSMsgQueue* self) {
 }
 
 void rps_server() {
+  printf("pc=%p,x[30]=%p,x30c=%p\r\n", current_task->pc, current_task->x[30], current_task->x30_copy);
   printf("rps_server\r\n");
   printf("rps_server_tid = %d\r\n", MyTid());
+  printf("pc=%p,x[30]=%p,x30c=%p\r\n", current_task->pc, current_task->x[30], current_task->x30_copy);
   RegisterAs("rps_server");
+  printf("pc=%p,x[30]=%p,x30c=%p\r\n", current_task->pc, current_task->x[30], current_task->x30_copy);
   printf("rps_server successfully registered in name_server\r\n");
 
   MemoryPool memory_pool;

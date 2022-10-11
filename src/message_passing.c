@@ -65,7 +65,7 @@ void synchronized_send_receive(Task *sender, const char *msg_from, int len_msg_f
 //      *get_receive_args(receiver)->tid = sender->tid;
 
   int actual_len = copy_message(msg_from, len_msg_from, msg_to, len_msg_to);
-  return_to(receiver, actual_len);
+  assign_result(receiver, actual_len);
 
   receiver->state = Ready;
 }
@@ -83,7 +83,7 @@ void sys_send() {
 
   if (receiver == NULL) {
     printf("Receiver tid: %d not found\r\n", args->tid);
-    return_to(sender, -1);
+    assign_result(sender, -1);
     return;
   }
 
@@ -110,7 +110,7 @@ void sys_send() {
       sender->state = WaitSend;
     } else {
       printf("Fail to register as sender to receiver(tid:%d)\r\n", receiver->tid);
-      return_to(sender, -2);
+      assign_result(sender, -2);
     }
   }
 
@@ -144,7 +144,7 @@ void sys_receive() {
   Task *sender = task_queue_get(sender_id);
   if (sender == NULL) {
     printf("Sender tid: %d is invalid", sender_id);
-    return_to(receiver, -1);
+    assign_result(receiver, -1);
     return;
   }
 
@@ -183,7 +183,7 @@ void sys_reply() {
 
   if (sender == NULL) {
     printf("Sender tid: %d is invalid", args->tid);
-    return_to(receiver, -1);
+    assign_result(receiver, -1);
     return;
   }
 

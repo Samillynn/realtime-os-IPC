@@ -1,3 +1,5 @@
+check sp, x29, x30
+
 sub task prio low
 
 Prob: receive tid is wrong

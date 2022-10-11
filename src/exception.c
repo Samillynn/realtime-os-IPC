@@ -11,7 +11,10 @@ u64 (*exception_handlers[1 << 16 ])(void);
 
 u64 activate(Task *task) {
   current_task = task;
-  current_task->x[0] = current_task->result;
+
+  if (current_task->should_pass_result) {
+    current_task->x[0] = current_task->result;
+  }
 
   return activate_current_task();
 }
@@ -20,10 +23,10 @@ void handle_exception(u64 esr) {
   u8 exception_class = (esr >> EXCEPTION_CLASS_OFFSET);
   if (exception_class == SVC_CLASS) {
     u16 imm = esr; // cast to the last 16 bits
-    u64 result = exception_handlers[imm]();
-    get_current_task()->result = result;
+    exception_handlers[imm]();
   } else {
-    printf("Unsupported exception class: %u\r\n", esr);
+    printf("Unsupported exception class: %u from task[tid:%d]\r\n", esr, current_task->tid);
+    printf("PC=%p, X30=%p, X30[COPY]=%p\r\n", current_task->pc, current_task->x[30], current_task->x30_copy);
   }
 
   return;

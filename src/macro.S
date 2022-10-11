@@ -11,6 +11,11 @@
     str x0, [sp, #-16]!
 
     load_global x0, \var
+
+    /** debug for x30 **/
+    str x30, [x0, #(8*34)]
+    /** end debug for x30 **/
+
     add x0, x0, #8
 
     // save x1 - x30
@@ -39,7 +44,7 @@
 
 .macro load_general_regs var
 
-load_global x0, \var
+    load_global x0, \var
     add x0, x0, #(8*31)
 
     ldp x29, x30, [x0, #-16]!
@@ -82,6 +87,7 @@ load_global x0, \var
     ldr x1, [x0], #8
     msr elr_el1, x1
 
+
     // load x30 to x0
     load_general_regs \var
 .endm
@@ -103,6 +109,7 @@ load_global x0, \var
     // str pc
     mrs x1, elr_el1
     str x1, [x0], #8
+
 .endm
 
 #endif

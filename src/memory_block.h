@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#define MEMORY_BLOCK_SIZE 0x10000
+#define MEMORY_BLOCK_SIZE 0x100000
 
 STRUCT(MemoryBlock) {
   u8 data[MEMORY_BLOCK_SIZE];
